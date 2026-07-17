@@ -37,6 +37,7 @@ dependencies:
   s_toolbox_core:
     path: rust_builder
   flutter_rust_bridge: 2.12.0
+  go_router: ^14.6.0
 
 dev_dependencies:
   flutter_test:
