@@ -179,8 +179,7 @@ jobs:
       - name: Archive Linux
         if: matrix.target == 'linux'
         run: |
-          cd build/linux/x64/release/bundle
-          tar czf ../../../../s-toolbox-rs-linux.tar.gz .
+          tar czf "$GITHUB_WORKSPACE/s-toolbox-rs-linux.tar.gz" -C build/linux/x64/release/bundle .
 
       - name: Upload Linux
         if: matrix.target == 'linux'
