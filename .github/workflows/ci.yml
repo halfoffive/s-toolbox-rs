@@ -152,7 +152,7 @@ jobs:
 
       - name: Build Web
         if: matrix.target == 'web'
-        run: flutter build web --release
+        run: flutter build web --release --base-href=/s-toolbox-rs/
 
       # ===== 打包产物 =====
       - name: Archive Android
@@ -194,3 +194,35 @@ jobs:
         with:
           name: s-toolbox-rs-web
           path: build/web
+
+  # ===== 部署 Web 到 GitHub Pages：仅 push 到 main 或打 tag 时跑 =====
+  deploy-pages:
+    needs: build
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download Web artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: s-toolbox-rs-web
+          path: web-build
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web-build
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -28,9 +28,10 @@ s-toolbox-rs/
 ├── lib/                      # Flutter (Dart) 源码
 │   ├── main.dart             # 入口
 │   └── src/
-│       ├── app/              # 根 widget、主题模式切换
+│       ├── app/              # 根 widget、路由、共享 AppBar / Drawer
 │       ├── theme/            # M3 主题构建
-│       ├── settings/         # 应用设置（主题模式）
+│       ├── settings/         # 应用设置（主题模式，单例 AppSettings.instance）
+│       ├── widgets/          # 共享 widget（主题切换按钮）
 │       ├── features/
 │       │   └── calculator/   # 计算器页面
 │       └── rust/             # flutter_rust_bridge 生成物（.gitignore 忽略，本地/CI 再生）
@@ -122,12 +123,20 @@ flutter analyze
 
 表达式求值遵循标准优先级：`1 + 2 × 3 = 7`，`(1 + 2) × 3 = 9`。
 
+## Web 在线 Demo
+
+每次合并到 `main` 或打 tag `v*`，CI 会自动把 Web 版本部署到 GitHub Pages：
+
+- 地址：<https://halfoffive.github.io/s-toolbox-rs/>
+- base-href 为 `/s-toolbox-rs/`（含仓库名），保证子路径下资源加载正确
+- 仓库 Settings → Pages → Source 需设为 GitHub Actions
+
 ## GitHub Actions
 
 CI 工作流定义在 `.github/workflows/ci.yml`：
 
 - **PR / push 到非 main 分支**：运行 lint + test（Rust clippy/fmt/test + Flutter analyze/test），快速反馈
-- **push 到 main / 打 tag**：在 lint-test 通过后，并行构建 5 个平台产物并上传 artifact
+- **push 到 main / 打 tag**：在 lint-test 通过后，并行构建 5 个平台产物并上传 artifact，并把 Web 产物部署到 GitHub Pages（见上）
 
 ## License
 

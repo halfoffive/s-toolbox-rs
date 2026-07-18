@@ -100,17 +100,20 @@ flutter analyze
 | `lib/main.dart` | Flutter 入口，初始化 `RustLib` 后 `runApp` |
 | `lib/src/app/app.dart` | 根 widget `ToolboxApp`，主题监听 + 路由装配 |
 | `lib/src/app/router.dart` | go_router 路由表：`/` 首页、`/tools/:id` 工具页（按 id 在 Registry 查找，未知 id 显示兜底页） |
+| `lib/src/app/toolbox_app_bar.dart` | **全局共享 AppBar**：标题 `s-toolbox-rs · {toolName}` + 左侧菜单按钮 + 右侧主题切换按钮 |
+| `lib/src/app/toolbox_drawer.dart` | **全局共享 Drawer**：内联主题模式设置 + GitHub 仓库链接 |
 | `lib/src/tools/registry.dart` | **工具中央注册表**，新增工具在此追加一条 `Tool` 记录 |
 | `lib/src/tools/tool.dart` | `Tool` 元数据定义（id / 名称 / 分类 / builder / 搜索关键词） |
-| `lib/src/features/home/` | 首页（工具网格 + 搜索 + 分类筛选 + 主题切换） |
+| `lib/src/features/home/` | 首页（工具网格 + 搜索 + 分类筛选） |
 | `lib/src/features/calculator/` | 计算器工具页 UI |
+| `lib/src/widgets/theme_toggle_button.dart` | 主题切换单按钮：三态循环 light→dark→system + AnimatedSwitcher 动画 |
 | `lib/src/rust/` | FRB 生成物（`.gitignore` 忽略，本地/CI 生成） |
 | `rust/src/api/calc.rs` | Rust 对 Flutter 暴露的 API 入口（`evaluate` / `init_app`） |
 | `rust/src/calc/` | 计算器核心：`token.rs`(词法) -> `parser.rs`(解析) -> `eval.rs`(求值)，外加 `ast.rs` / `mod.rs` |
 | `rust/src/frb_generated.rs` | FRB 生成物（`.gitignore` 忽略） |
 | `rust_builder/` | cargokit 构建脚本，Flutter 加载 Rust 动态库的桥梁 |
 | `flutter_rust_bridge.yaml` | FRB 配置：Rust 输入 `crate::api`，Dart 输出 `lib/src/rust` |
-| `.github/workflows/ci.yml` | CI：PR 跑 lint+test，push main/tag 跑全平台构建 |
+| `.github/workflows/ci.yml` | CI：PR 跑 lint+test，push main/tag 跑全平台构建 + Web 部署到 GitHub Pages |
 
 ### 新增工具（最高频改动，务必按此流程）
 
@@ -132,7 +135,7 @@ flutter analyze
 ### CI 行为
 
 - **PR / push 到非 main 分支**：仅运行 lint + test（Rust fmt/clippy/test + Flutter analyze/test），快速反馈。
-- **push 到 main / 打 tag `v*`**：lint-test 通过后，并行构建 Android/Windows/macOS/Linux/Web 五平台产物并上传 artifact。
+- **push 到 main / 打 tag `v*`**：lint-test 通过后，并行构建 Android/Windows/macOS/Linux/Web 五平台产物并上传 artifact；并把 Web 产物部署到 GitHub Pages（地址：<https://halfoffive.github.io/s-toolbox-rs/>，base-href `/s-toolbox-rs/`）。仓库 Settings → Pages → Source 需设为 GitHub Actions。
 - CI 固定 Flutter 3.44.4 / Rust 1.96.0，并预装 `flutter_rust_bridge_codegen` 与 `cargo-expand` 后再跑 codegen。
 
 ---

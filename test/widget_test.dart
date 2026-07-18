@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:s_toolbox_rs/src/features/calculator/calculator_page.dart';
+import 'package:s_toolbox_rs/src/settings/app_settings.dart';
 
 void main() {
+  // 初始化 AppSettings 单例（ToolboxAppBar 的 ThemeToggleButton 依赖）
+  setUpAll(() => AppSettings());
+
   testWidgets('按键累积表达式并显示', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(home: CalculatorPage()),
