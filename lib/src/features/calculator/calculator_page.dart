@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../app/toolbox_app_bar.dart';
+import '../../app/toolbox_drawer.dart';
 import '../../rust/api/calc.dart';
 
 /// 计算器页面
@@ -99,10 +101,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('计算器'),
-        centerTitle: true,
-      ),
+      appBar: const ToolboxAppBar(toolName: '计算器'),
+      drawer: const ToolboxDrawer(),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {

@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../settings/app_settings.dart';
-import '../../theme/app_theme.dart';
+import '../../app/toolbox_app_bar.dart';
+import '../../app/toolbox_drawer.dart';
 import '../../tools/registry.dart';
 import '../../tools/tool.dart';
 import '../../tools/tool_category.dart';
 
 /// 首页：工具网格 + 顶部搜索 + 分类筛选
-///
-/// 主题切换按钮仅在此页 AppBar 出现；工具页 AppBar 不带主题入口。
 class HomePage extends StatefulWidget {
-  final AppSettings settings;
-
-  const HomePage({super.key, required this.settings});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -36,13 +32,8 @@ class _HomePageState extends State<HomePage> {
         .toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('工具箱'),
-        centerTitle: true,
-        actions: [
-          _ThemeModeButton(settings: widget.settings),
-        ],
-      ),
+      appBar: const ToolboxAppBar(toolName: '工具箱'),
+      drawer: const ToolboxDrawer(),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -236,64 +227,6 @@ class _ToolCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// 主题模式切换按钮 + 弹出菜单
-///
-/// 从旧版 `app.dart` 迁移而来，仅出现在首页 AppBar。
-class _ThemeModeButton extends StatelessWidget {
-  final AppSettings settings;
-  const _ThemeModeButton({required this.settings});
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeModeOption>(
-      valueListenable: settings,
-      builder: (context, option, _) {
-        return PopupMenuButton<ThemeModeOption>(
-          icon: Icon(_iconFor(option)),
-          tooltip: '主题模式',
-          onSelected: settings.setThemeMode,
-          itemBuilder: (context) => [
-            _item(ThemeModeOption.light, '浅色', Icons.light_mode_outlined, option),
-            _item(ThemeModeOption.dark, '深色', Icons.dark_mode_outlined, option),
-            _item(ThemeModeOption.system, '跟随系统', Icons.settings_brightness, option),
-          ],
-        );
-      },
-    );
-  }
-
-  IconData _iconFor(ThemeModeOption option) {
-    switch (option) {
-      case ThemeModeOption.light:
-        return Icons.light_mode_outlined;
-      case ThemeModeOption.dark:
-        return Icons.dark_mode_outlined;
-      case ThemeModeOption.system:
-        return Icons.settings_brightness;
-    }
-  }
-
-  PopupMenuItem<ThemeModeOption> _item(
-    ThemeModeOption value,
-    String label,
-    IconData icon,
-    ThemeModeOption current,
-  ) {
-    return PopupMenuItem<ThemeModeOption>(
-      value: value,
-      child: Row(
-        children: [
-          Icon(icon, size: 20),
-          const SizedBox(width: 12),
-          Text(label),
-          const Spacer(),
-          if (value == current) const Icon(Icons.check, size: 18),
-        ],
       ),
     );
   }
